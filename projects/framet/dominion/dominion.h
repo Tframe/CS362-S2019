@@ -128,4 +128,15 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 /* Set array position of each player who won (remember ties!) to
    1, others to 0 */
 
+//refactored function implementations for assignment 2
+int playAdventurer(int player, struct gameState *state, int *temphand, int drawntreasure, int z);
+
+int playSmithy(int player, struct gameState *state, int handPos);
+
+int playTribute(int player, struct gameState *state, int handPos, int nextPlayer, int *tributeRevealedCards);
+
+int playEmbargo(int player, struct gameState *state, int handPos, int choice1);
+
+int playSteward(int player, struct gameState *state, int handPos, int choice1, int choice2, int choice3);
+
 #endif
