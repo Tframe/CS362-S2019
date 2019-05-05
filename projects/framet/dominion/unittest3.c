@@ -4,7 +4,7 @@
  * Date: 04/29/2019
  *
  * Description: This program tests refactored code from
- * assignment 2. The refactored code tests Embargo funciton.
+ * assignment 2. The refactored code tests Steward funciton.
  *
  * ************************************/
 
@@ -16,7 +16,9 @@
 #include "rngs.h"
 #include <stdlib.h>
 
-#define TESTCARD "embargo"
+#define TESTCARD "steward"
+
+void assertResults(int results, int expected);
 
 int main(){
 
@@ -38,14 +40,31 @@ int main(){
 	memcpy(&testG, &G, sizeof(struct gameState));
 
 	printf("\n********** TESTING CARD: %s **********\n", TESTCARD);
-	printf("TEST 1: gain 2 coins \n");
+	printf("TEST 1: gain 2 cards \n");
+	choice1 = 1;
+	cardEffect(steward, choice1, choice2, choice3, &testG, handpos, &bonus);
+	printf("Hand count = %d, expected = %d\n", testG.handCount[thisPlayer], G.handCount[thisPlayer] + 1);
+	assertResults(testG.handCount[thisPlayer], G.handCount[thisPlayer] + 1);
 
-	cardEffect(embargo, choice1, choice2, choice3, &testG, handpos, &bonus);
-	printf("Coins count = %d, expected = %d\n", testG.coins, G.coins + 2);	
+	printf("TEST 2: gain 2 coins \n");
+	choice1 = 2;
+	cardEffect(steward, choice1, choice2, choice3, &testG, handpos, &bonus);
+	printf("Coins = %d, expected = %d\n", testG.coins, G.coins + 2);
+	assertResults(testG.coins, G.coins + 2);
 
-	printf("TEST 2: Make sure embargo is trashed\n");
+	printf("TEST 3: trash 2 cards \n");
+	choice1 = 3;
+	cardEffect(steward, choice1, choice2, choice3, &testG, handpos, &bonus);
+	printf("Hand count = %d, expected = %d\n", testG.handCount[thisPlayer], G.handCount[thisPlayer] - 2);
+	printf("Deck count = %d, expected = %d\n", testG.deckCount[thisPlayer], G.deckCount[thisPlayer] - 2);
+	assertResults(testG.handCount[thisPlayer] == G.handCount[thisPlayer] - 2, testG.deckCount[thisPlayer] == G.deckCount[thisPlayer] - 2);
+}
 
-	printf("Hand count = %d, expected = %d\n", testG.handCount[thisPlayer], G.handCount[thisPlayer] - 1);
-	printf("Deck count = %d, expected = %d\n", testG.deckCount[thisPlayer], G.deckCount[thisPlayer]);
-
+void assertResults(int result, int expected){
+	if(result == expected){
+		printf("Test passed!\n");
+	}
+	else{
+		printf("Test failed.\n");
+	}
 }
