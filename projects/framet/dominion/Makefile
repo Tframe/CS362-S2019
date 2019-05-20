@@ -12,6 +12,19 @@ playdom: dominion.o playdom.c
 testDrawCard: testDrawCard.c dominion.o rngs.o
 	gcc  -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
+randomtestadventurer: randomtestadventurer.c dominion.o rngs.o
+	gcc -o randomtestadventurer dominion.c rngs.c randomtestadventurer.c $(CFLAGS)
+randomtestcard1: randomtestcard1.c dominion.o rngs.o
+	gcc -o randomtestcard1 dominion.c rngs.c randomtestcard1.c $(CFLAGS)
+randomtestcard2: randomtestcard2.c dominion.o rngs.o
+	gcc -o randomtestcard2 dominion.c rngs.c randomtestcard2.c $(CFLAGS)
+
+randomtestresults: randomtestadventurer randomtestcard1 randomtestcard2
+	./randomtestadventurer >> randomtestresults.out
+	./randomtestcard1 >> randomtestresults.out
+	./randomtestcard2 >> randomtestresults.out
+	gcov dominion.c >> randomtestresults.out
+	cat dominion.c.gcov >> randomtestresults.out
 
 #########
 

@@ -1,0 +1,78 @@
+        -:    0:Source:randomtestadventurer.c
+        -:    0:Graph:randomtestadventurer.gcno
+        -:    0:Data:randomtestadventurer.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/******************************
+        -:    2: * Program: Random Test Adventurer
+        -:    3: * Author: Trevor Frame
+        -:    4: * Date: 05/16/2019
+        -:    5: *
+        -:    6: * Description: This program random tests refactored code
+        -:    7: * from assignment 2. The refactored code is for the 
+        -:    8: * adventurer card.
+        -:    9: * ***************************/
+        -:   10:
+        -:   11:#include "dominion.h"
+        -:   12:#include "dominion_helpers.h"
+        -:   13:#include <string.h>
+        -:   14:#include <stdio.h>
+        -:   15:#include <assert.h>
+        -:   16:#include "rngs.h"
+        -:   17:#include <stdlib.h>
+        -:   18:#include <math.h>
+        -:   19:
+        -:   20:#define TESTCARD "adventurer"
+        -:   21:
+        -:   22:
+     2000:   23:int checkAdventurer(int currentPlayer, struct gameState *testG){
+        -:   24:
+     2000:   25:	int handpos = 0;
+     2000:   26:	int choice1 = 0;
+     2000:   27:	int choice2 = 0;
+     2000:   28:	int choice3 = 0;
+     2000:   29:	int bonus = 0;
+        -:   30:	
+        -:   31:
+     2000:   32:	cardEffect(adventurer, choice1, choice2, choice3, testG, handpos, &bonus);
+     2000:   33:	return 0;	
+        -:   34:}
+        -:   35:
+        1:   36:int main(){
+        -:   37:
+        -:   38:	int deckCount;
+        -:   39:	int discardCount;
+        -:   40:	int handCount;
+        -:   41:	int player;
+        1:   42:	int numPlayers = 2;
+        1:   43:	int seed = 1000;
+        -:   44:	struct gameState G;
+        -:   45:
+        1:   46:	SelectStream(2);
+        1:   47:	PutSeed(3);
+        -:   48:
+        1:   49:	int k[10] = {adventurer, smithy, embargo, tribute, steward, mine, cutpurse, council_room, village, sea_hag};
+        -:   50:
+        1:   51:	printf("********** TESTING CARD: %s **********\n", TESTCARD);
+        -:   52:
+        1:   53:	printf("Random Teseting\n");
+        -:   54:
+     2001:   55:	for (int i = 0; i < 2000; i++){
+     2000:   56:		printf("Run # %d\n", i);	
+ 52602000:   57:		for(int j = 0; j < sizeof(struct gameState); j++){
+ 52600000:   58:			((char*)&G)[j] = floor(Random() * 256);
+        -:   59:		}
+     2000:   60:		initializeGame(numPlayers, k, seed, &G);
+        -:   61:	
+     2000:   62:		player = floor(Random() * 2);
+     2000:   63:		G.deckCount[player] = floor(Random() * MAX_DECK);
+     2000:   64:		G.discardCount[player] = floor(Random() * MAX_DECK);
+     2000:   65:		G.handCount[player] = floor(Random() * MAX_HAND);
+     2000:   66:		checkAdventurer(player, &G);
+        -:   67:	
+        -:   68:	}
+        -:   69:	
+        1:   70:	printf("Test Complete!\n");
+        -:   71:
+        1:   72:	return 0;
+        -:   73:}
