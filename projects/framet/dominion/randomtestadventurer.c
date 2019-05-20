@@ -90,11 +90,6 @@ int main(){
 
 		memcpy(&testG, &G, sizeof(struct gameState));
 
-		for (int m = 0; m < testG.handCount[player]; m++){
-			printf("%d, ", testG.hand[player][m]);
-		}
-
-
 		checkAdventurer(player, &testG);
 		actualCount = 0;	
 		for (int j = 0; j < G.handCount[player]; j++){
