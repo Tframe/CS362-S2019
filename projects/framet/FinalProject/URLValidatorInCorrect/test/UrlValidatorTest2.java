@@ -5,8 +5,11 @@ import junit.framework.TestCase;
 
 public class UrlValidatorTest extends TestCase{
 
+	private final boolean printStatus = false;
+	private final boolean printIndex = false;
+
 	public UrlValidatorTest(String testName){
-		super(tesetName);
+		super(testName);
 	}
 
 
@@ -73,6 +76,14 @@ public void testIsValid(Object[] testObjects, long options){
          System.out.println();
       }
 }
+
+
+	public void testValidator101(){
+		String[] schemes = {"http", "https", "ftp"};
+		UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+		assertTrue(urlValidator.isValid("http://example.com/index.html#!s3!search%20terms"));
+
+	}
 
 
 	//test schemes
