@@ -1,50 +1,42 @@
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Random;
 
 public class UrlValidatorRandomTest {
     @Test
-    public void testIsValid() {
+    public void randomTestIsValid() {
+        short NUM_TEST_CASES = 500;
         long options =
                 UrlValidator.ALLOW_2_SLASHES
                         + UrlValidator.ALLOW_ALL_SCHEMES
                         + UrlValidator.NO_FRAGMENTS;
 
-        ResultPair urlTestCase = buildTestURL();
-        System.out.println(urlTestCase.item);
-        System.out.println(urlTestCase.valid);
+        UrlValidator urlValidator = new UrlValidator(null, null, options);
+
+        for (int i = 0; i < NUM_TEST_CASES; i++) {
+            ResultPair urlTestCase = buildTestURL();
+            String urlToTest = urlTestCase.item;
+            boolean expected = urlTestCase.valid;
+
+            assertThat(urlToTest, urlValidator.isValid(urlToTest), is(expected));
+        }
+
+        System.out.println(String.format("All %d test cases passed.", NUM_TEST_CASES));
     }
 
     private ResultPair buildTestURL() {
         int randIdx;
-        boolean expected;
+        boolean expected = true;
         Random randomGen = new Random();
         StringBuilder urlBuilder = new StringBuilder();
 
-
-        // Build Scheme
-        randIdx = randomGen.nextInt(testUrlScheme.length);
-        urlBuilder.append(testUrlScheme[randIdx].item);
-        expected = testUrlScheme[randIdx].valid;
-
-        // Build Authority
-        randIdx = randomGen.nextInt(testUrlAuthority.length);
-        urlBuilder.append(testUrlAuthority[randIdx].item);
-        expected = testUrlAuthority[randIdx].valid && expected;
-
-        // Build Port
-        randIdx = randomGen.nextInt(testUrlPort.length);
-        urlBuilder.append(testUrlPort[randIdx].item);
-        expected = testUrlPort[randIdx].valid && expected;
-
-        // Build Path
-        randIdx = randomGen.nextInt(testPath.length);
-        urlBuilder.append(testPath[randIdx].item);
-        expected = testPath[randIdx].valid && expected;
-
-//        // Build Fragment
-//        randIdx = randomGen.nextInt(test.length);
-//        urlBuilder.append(testUrlScheme[randIdx].item);
-//        expected = testUrlScheme[randIdx].valid;
+        for (ResultPair[] partition: testPartitions) {
+            randIdx = randomGen.nextInt(partition.length - 1);
+            urlBuilder.append(partition[randIdx].item);
+            expected &= partition[randIdx].valid;
+        }
 
         String urlToTest = urlBuilder.toString();
 
@@ -53,17 +45,21 @@ public class UrlValidatorRandomTest {
 
 
     /* Pairs taken from URLValidatorCorrect for random testing */
-    private ResultPair[] testUrlScheme = {new ResultPair("http://", true),
+    private ResultPair[] testUrlScheme = {
+            new ResultPair("http://", true),
             new ResultPair("ftp://", true),
             new ResultPair("h3t://", true),
             new ResultPair("3ht://", false),
             new ResultPair("http:/", false),
             new ResultPair("http:", false),
             new ResultPair("http/", false),
-            new ResultPair("://", false)};
+            new ResultPair("://", false)
+    };
 
-    private ResultPair[] testUrlAuthority = {new ResultPair("www.google.com", true),
-            new ResultPair("www.google.com.", true),
+    private ResultPair[] testUrlAuthority = {
+            new ResultPair("www.google.com", true),
+            new ResultPair("google.com", true),
+            new ResultPair("bit.ly", true),
             new ResultPair("go.com", true),
             new ResultPair("go.au", true),
             new ResultPair("0.0.0.0", true),
@@ -83,7 +79,9 @@ public class UrlValidatorRandomTest {
             new ResultPair("aaa", false),
             new ResultPair("", false)
     };
-    private ResultPair[] testUrlPort = {new ResultPair(":80", true),
+
+    private ResultPair[] testUrlPort = {
+            new ResultPair(":80", true),
             new ResultPair(":65535", true), // max possible
             new ResultPair(":65536", false), // max possible +1
             new ResultPair(":0", true),
@@ -93,7 +91,9 @@ public class UrlValidatorRandomTest {
             new ResultPair(":999999999999999999", false),
             new ResultPair(":65a", false)
     };
-    private ResultPair[] testPath = {new ResultPair("/test1", true),
+
+    private ResultPair[] testPath = {
+            new ResultPair("/test1", true),
             new ResultPair("/t123", true),
             new ResultPair("/$23", true),
             new ResultPair("/..", false),
@@ -102,28 +102,15 @@ public class UrlValidatorRandomTest {
             new ResultPair("", true),
             new ResultPair("/test1/file", true),
             new ResultPair("/..//file", false),
-            new ResultPair("/test1//file", false)
-    };
-    //Test allow2slash, noFragment
-    private ResultPair[] testUrlPathOptions = {new ResultPair("/test1", true),
-            new ResultPair("/t123", true),
-            new ResultPair("/$23", true),
-            new ResultPair("/..", false),
-            new ResultPair("/../", false),
-            new ResultPair("/test1/", true),
-            new ResultPair("/#", false),
-            new ResultPair("", true),
-            new ResultPair("/test1/file", true),
-            new ResultPair("/t123/file", true),
-            new ResultPair("/$23/file", true),
-            new ResultPair("/../file", false),
-            new ResultPair("/..//file", false),
-            new ResultPair("/test1//file", true),
-            new ResultPair("/#/file", false)
+            new ResultPair("/test3//file", false)
     };
 
-    private ResultPair[] testUrlQuery = {new ResultPair("?action=view", true),
+    private ResultPair[] testUrlQuery = {
+            new ResultPair("?action=view", true),
             new ResultPair("?action=edit&mode=up", true),
-            new ResultPair("", true)
+            new ResultPair("", true),
+            new ResultPair("?hi=test", true),
     };
+
+    private ResultPair[][] testPartitions = { testUrlScheme, testUrlAuthority, testUrlPort, testPath, testUrlQuery };
 }
