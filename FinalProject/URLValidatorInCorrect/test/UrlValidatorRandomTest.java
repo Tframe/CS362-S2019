@@ -107,7 +107,7 @@ public class UrlValidatorRandomTest {
             new ResultPair("", true),
             new ResultPair("/test1/file", true),
             new ResultPair("/..//file", false),
-            new ResultPair("/test3//file", false)
+            new ResultPair("/test3//file", true)
     };
 
     private ResultPair[] testUrlQuery = {
