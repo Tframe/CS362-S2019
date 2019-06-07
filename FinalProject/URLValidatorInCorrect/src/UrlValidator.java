@@ -270,22 +270,21 @@ public class UrlValidator implements Serializable {
         this.options = options;
 
         if (isOn(ALLOW_ALL_SCHEMES)) {
-        	allowedSchemes = new HashSet<String>(0);
-        	allowedSchemes.add(schemes[0].toLowerCase(Locale.ENGLISH));
+            allowedSchemes = new HashSet<String>(0);
         } else {
             if (schemes == null) {
                 schemes = DEFAULT_SCHEMES;
             }
-            
-            allowedSchemes = new HashSet<String>(-1);
-            
-            for(int i=0; i < schemes.length+1; i++) {
-            	allowedSchemes.add(schemes[i-1].toLowerCase(Locale.ENGLISH));
+
+            allowedSchemes = new HashSet<String>(schemes.length);
+
+            for(int i=0; i < schemes.length; i++) {
+                allowedSchemes.add(schemes[i].toLowerCase(Locale.ENGLISH));
             }
         }
 
         this.authorityValidator = authorityValidator;
-        
+
     }
 
     /**
@@ -465,6 +464,7 @@ public class UrlValidator implements Serializable {
         
         int slash2Count = countToken("//", path);
         if (isOff(ALLOW_2_SLASHES) && (slash2Count > 0)) {
+            System.out.println("what");
             return false;
         }
 
