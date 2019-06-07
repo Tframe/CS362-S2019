@@ -1,3 +1,4 @@
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -5,15 +6,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Random;
 
 public class UrlValidatorRandomTest {
+    private UrlValidator urlValidator;
+
+    @Before
+    public void init() {
+        long options = UrlValidator.ALLOW_2_SLASHES
+                + UrlValidator.ALLOW_ALL_SCHEMES
+                + UrlValidator.NO_FRAGMENTS;
+        urlValidator = new UrlValidator(null, null, options);
+    }
+
     @Test
     public void randomTestIsValid() {
         short NUM_TEST_CASES = 500;
-        long options =
-                UrlValidator.ALLOW_2_SLASHES
-                        + UrlValidator.ALLOW_ALL_SCHEMES
-                        + UrlValidator.NO_FRAGMENTS;
-
-        UrlValidator urlValidator = new UrlValidator(null, null, options);
 
         for (int i = 0; i < NUM_TEST_CASES; i++) {
             ResultPair urlTestCase = buildTestURL();
